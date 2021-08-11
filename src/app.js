@@ -63,3 +63,87 @@ const galleryItems = [
     description: 'Lighthouse Coast Sea',
   },
 ];
+
+const galleryEl = document.querySelector(".js-gallery")
+console.log(galleryEl);
+const galleryMarkup = createGalleryMarkup(galleryItems);
+console.log(galleryMarkup);
+
+ galleryEl.insertAdjacentHTML("beforeend", galleryMarkup)
+
+function createGalleryMarkup(gallery) {
+  return gallery.map(({ preview, original, description }) => 
+   
+    `<li class="gallery__item">
+  <a
+    class="gallery__link"
+    href="${original}"
+  >
+    <img
+      class="gallery__image"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
+    />
+  </a>
+</li>`
+  ).join("");
+  
+};
+
+const modalEl = document.querySelector(".lightbox")
+console.log(modalEl);
+const btnModalClose = document.querySelector("[data-action='close-lightbox']");
+console.log(btnModalClose);
+const overlayEl = document.querySelector(".lightbox__overlay")
+console.log(overlayEl);
+const modalImg = document.querySelector(".lightbox__image")
+
+
+galleryEl.addEventListener('click', onImgLinkClick);
+btnModalClose.addEventListener("click", onBtnModalClose);
+overlayEl.addEventListener('click', onBtnModalClose)
+
+function onImgLinkClick(e) {
+  console.log(e.target);
+const target = e.target;
+  const url = target.dataset.source;
+
+  modalEl.classList.add("is-open");
+  if (e.target.nodeName !== "IMG") {
+    return;
+  }
+  window.addEventListener('keydown', onEscapeClose);
+
+  modalImg.dataset.source === target.dataset.source;
+  console.log(modalImg.dataset.source);
+  //чтобы модалку можно было закрывать клав escape  вешаем на window  слушателя клавиатуры
+  
+
+//  modalImg.dataset.source === url;// с переменной то  же что и  выше строка
+  //подменить ссылку с превью на оригинад
+
+
+  
+
+};
+
+function onBtnModalClose(e) {
+window.removeEventListener('keydown', onEscapeClose);
+  modalEl.classList.remove("is-open");
+  modalImg.dataset.source === "";
+  //Очистка значения атрибута src элемента img.lightbox__image
+}
+
+function onEscapeClose(e) {
+  // проверяем  клавишу  нажатую
+  if (e.code === "Escape") {
+    onBtnModalClose();
+}
+}
+
+function onBackdropClose(e) {
+  if (e.currentTarget === e.target) {
+    onBtnModalClose();
+  }
+}
