@@ -99,39 +99,25 @@ const overlayEl = document.querySelector(".lightbox__overlay")
 console.log(overlayEl);
 const modalImg = document.querySelector(".lightbox__image")
 
-
 galleryEl.addEventListener('click', onImgLinkClick);
 btnModalClose.addEventListener("click", onBtnModalClose);
 overlayEl.addEventListener('click', onBtnModalClose)
 
 function onImgLinkClick(e) {
-  console.log(e.target);
-const target = e.target;
-  const url = target.dataset.source;
-
+  e.preventDefault();
   modalEl.classList.add("is-open");
   if (e.target.nodeName !== "IMG") {
     return;
   }
+
   window.addEventListener('keydown', onEscapeClose);
-
-  modalImg.dataset.source === target.dataset.source;
-  console.log(modalImg.dataset.source);
-  //чтобы модалку можно было закрывать клав escape  вешаем на window  слушателя клавиатуры
-  
-
-//  modalImg.dataset.source === url;// с переменной то  же что и  выше строка
-  //подменить ссылку с превью на оригинад
-
-
-  
-
+  modalImg.src = e.target.dataset.source;
 };
 
 function onBtnModalClose(e) {
 window.removeEventListener('keydown', onEscapeClose);
   modalEl.classList.remove("is-open");
-  modalImg.dataset.source === "";
+  modalImg.src === "";
   //Очистка значения атрибута src элемента img.lightbox__image
 }
 
