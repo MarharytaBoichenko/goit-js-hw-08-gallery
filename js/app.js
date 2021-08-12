@@ -122,6 +122,7 @@ window.removeEventListener('keydown', onEscapeClose);
 }
 
 function onEscapeClose(e) {
+  console.log(e);
   // проверяем  клавишу  нажатую
   if (e.code === "Escape") {
     onBtnModalClose();
@@ -133,3 +134,45 @@ function onBackdropClose(e) {
     onBtnModalClose();
   }
 }
+
+//пролистывание 
+
+const imgWrapEl = modalImg.closest(".lightbox__content")
+console.log(imgWrapEl);
+
+  // window.addEventListener('keydown', onEscapeClose);
+// imgWrapEl.addEventListener("keydown", onLeftClick);
+window.addEventListener('keydown', onLeftClick);
+
+function onLeftClick(e) {
+  console.log(e);
+  console.log(e.code);
+ 
+  
+  // проверяем  клавишу  нажатую
+  if (e.code !== "ArrowLeft") {
+    return;
+  } else {
+
+    //gtht,bhftv картинки и надо  заменить ссылку на  след 
+    galleryItems.forEach((item, index, arr) => {
+      console.log(item);
+      console.log(item.original, index);
+     
+      if (index === 0) {
+        return;
+      } modalEl.src = arr[index - 1].original;
+      return;
+    });
+  
+    };
+  
+}
+
+  
+
+
+onLeftClick()
+// function onRightClick() {
+  
+// }
