@@ -137,42 +137,62 @@ function onBackdropClose(e) {
 
 //пролистывание 
 
-const imgWrapEl = modalImg.closest(".lightbox__content")
-console.log(imgWrapEl);
 
-  // window.addEventListener('keydown', onEscapeClose);
-// imgWrapEl.addEventListener("keydown", onLeftClick);
-window.addEventListener('keydown', onLeftClick);
 
-function onLeftClick(e) {
-  console.log(e);
-  console.log(e.code);
- 
+
+window.addEventListener('keydown', onRightPress);
+window.addEventListener("keydown", onLeftPress)
+
+
+
+function onRightPress({ code }) {
+//картинка,  что сейчас открыта  в модалке
+  const currentImgRef = galleryEl
+    .querySelector(`[data-source="${modalImg.src}"]`);
   
-  // проверяем  клавишу  нажатую
-  if (e.code !== "ArrowLeft") {
+  console.log(currentImgRef);
+
+  //лишка-предок от которой будем  искать след  эл-т 
+  const parentNode = currentImgRef.closest('.gallery__item');
+  console.log(parentNode);
+  
+  //лед картинка - это выбрать след лишку,  если она есть(если не последняя
+  // и в этом эл-те ли  найти  эл-т  gallery-img)
+  const nextImgRef = parentNode.nextElementSibling?.querySelector('.gallery__image');
+  console.log(nextImgRef);
+
+  // ссылка  на  изображение  в найденной след  картинке -  это  то, что  находится в атрибуте data-source
+  console.log(nextImgRef.dataset.source);
+
+ //если нажата клавиif Вправо и если след картинка  существует,  то подменяем  ссылку  в модалке на ссылку след  картинки
+  if (code === 'ArrowRight' && nextImgRef) {
+      modalImg.src = nextImgRef.dataset.source
+      
+  } //а  если  нет  дальше эл-та -??? что  сделать чтоб консоль не выдавала ошибку??
+
+};
+
+function onLeftPress({ code }) {
+  const currentImgRef = galleryEl.querySelector(`[data-source="${modalImg.src}"]`);
+  console.log(currentImgRef);
+
+  const parentNode = currentImgRef.closest(".gallery__item");
+  console.log(parentNode);
+
+  const previousImgRef = parentNode.previousElementSibling?.querySelector(".gallery__image");
+  console.log(previousImgRef);
+
+  ////может так? 
+  if (code !== "ArrowLeft") {
     return;
-  } else {
-
-    //gtht,bhftv картинки и надо  заменить ссылку на  след 
-    galleryItems.forEach((item, index, arr) => {
-      console.log(item);
-      console.log(item.original, index);
-     
-      if (index === 0) {
-        return;
-      } modalEl.src = arr[index - 1].original;
-      return;
-    });
-  
-    };
-  
+  }
+    if (previousImgRef) {
+      modalImg.src = previousImgRef.dataset.source; 
+    } 
+   
 }
+///почему  при нажатии любой    стрелки отрабатывают консоли двух функций??
+///и при нажатии  любой клавиши ///
 
   
 
-
-onLeftClick()
-// function onRightClick() {
-  
-// }
