@@ -38,20 +38,26 @@ body {
 }
 
 .gallery__item {
+  /* transform: translateX(-50%); */
   position: relative;
   box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
     0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
 }
 
-/* .gallery__image:hover {
+.gallery__image:hover {
   transform: scale(1.03);
-} */
+}
 
 .gallery__image {
+  transform: translateX(-50%);
   height: 100%;
   width: 100%;
   object-fit: cover;
   transition: transform var(--animation-duration) var(--timing-function);
+}
+
+.gallery__image.is-loaded {
+  transform: translateX(0);
 }
 
 .gallery__link {
