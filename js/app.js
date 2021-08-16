@@ -144,13 +144,14 @@ window.addEventListener("keydown", onLeftPress);
 
 //вариант с findIndex 
 //находим  индекс эл-та-картинки, что сейчас открыта в модалке
-const activeImage = galleryItems.findIndex(img => img.original === modalImg.src);
+
 
 function onRightPress(e) {
   console.log(e);
    if (e.code !== "ArrowRight") {
     return;
-  }
+   }
+  const activeImage = galleryItems.findIndex(img => img.original === modalImg.src);
   //если картінка  есть індек равен ее індеку, еслі нет індекс равен 0  и будет начинаться  с 0
   let index = activeImage ? activeImage : 0;
 
@@ -169,6 +170,7 @@ function onLeftPress(e) {
   if (e.code !== "ArrowLeft") {
     return;
   }
+  const activeImage = galleryItems.findIndex(img => img.original === modalImg.src);
   let index = activeImage ? activeImage : galleryItems.length - 1;
   if (index > 0) {
     index -=1
