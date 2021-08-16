@@ -73,7 +73,7 @@ console.log(galleryMarkup);
  galleryEl.insertAdjacentHTML("beforeend", galleryMarkup)
 
 function createGalleryMarkup(gallery) {
-  return gallery.map(({ preview, original, description }) => 
+  return gallery.map(({ preview, original, description }, index) => 
     `<li class="gallery__item">
   <a
     class="gallery__link"
@@ -85,6 +85,7 @@ function createGalleryMarkup(gallery) {
       data-source="${original}"
       loading = "lazy"
       alt="${description}"
+      data-index = "${index}"
 
     />
   </a>
@@ -110,14 +111,17 @@ function onImgLinkClick(e) {
     return;
   }
   modalEl.classList.add("is-open");
+
   modalImg.src = e.target.dataset.source;
+  modalImg.alt = e.target.dataset.alt;
+
   window.addEventListener('keydown', onEscapeClose);
 };
 
 function onBtnModalClose(e) {
 window.removeEventListener('keydown', onEscapeClose);
   modalEl.classList.remove("is-open");
-  modalImg.src === "";
+  modalImg.src = "";
 }
 
 function onEscapeClose(e) {
@@ -138,44 +142,49 @@ function onBackdropClose(e) {
 window.addEventListener('keydown', onRightPress);
 window.addEventListener("keydown", onLeftPress);
 
-function onRightPress({ code }) {
-//картинка,  что сейчас открыта  в модалке
-  const currentImgRef = galleryEl
-    .querySelector(`[data-source="${modalImg.src}"]`);
-  
-  // console.log(currentImgRef);
-  //лишка-предок от которой будем  искать след  эл-т 
-  const parentNode = currentImgRef.closest('.gallery__item');
-  // console.log(parentNode);
-  //cлед картинка - это выбрать след лишку,  если она есть(если не последняя
-  // и в этом эл-те ли  найти  эл-т  gallery-img)
-  const nextImgRef = parentNode.nextElementSibling?.querySelector('.gallery__image');
-  // console.log(nextImgRef);
-  // ссылка  на  изображение  в найденной след  картинке -  это  то, что  находится в атрибуте data-source
-  console.log(nextImgRef.dataset.source);
+//вариант с findIndex 
 
- //если нажата клавиif Вправо и если след картинка  существует,  то подменяем  ссылку  в модалке на ссылку след  картинки
-  if (code === 'ArrowRight' && nextImgRef) {
-      modalImg.src = nextImgRef.dataset.source  
-  } return;
-  //а  если  нет  дальше эл-та -??? что  сделать чтоб консоль не выдавала ошибку??
-};
-
-function onLeftPress({ code }) {
-  const currentImgRef = galleryEl.querySelector(`[data-source="${modalImg.src}"]`);
-  const parentNode = currentImgRef.closest(".gallery__item");
-  const previousImgRef = parentNode.previousElementSibling?.querySelector(".gallery__image");
-  ////может так лучше? 
-  if (code !== "ArrowLeft") {
+function onRightPress(e) {
+  console.log(e);
+   if (e.code !== "ArrowRight") {
     return;
   }
-    if (!previousImgRef) { 
-      return;
-    }  modalImg.src = previousImgRef.dataset.source; 
-    
+  //находим  индекс эл-та-картинки, что сейчас открыта в модалке
+  const activeImage = galleryItems.findIndex(img => img.original === modalImg.src);
+  // console.log(activeImage);
+
+  //если картінка  есть індек равен ее індеку, еслі нет індекс равен 0  и будет начинаться  с 0
+  let index = activeImage ? activeImage : 0;
+
+  if (index < galleryItems.length - 1) {
+    index += 1;
+  } else {
+    index = 0;
+  }
+  console.log(index);
+  console.log(galleryItems[index]);
+  modalImg.src = galleryItems[index].original;
+  modalImg.alt = galleryItems[index].alt;
 }
 
-  
+function onLeftPress(e) {
+  if (e.code !== "ArrowLeft") {
+    return;
+  }
+    const activeImage = galleryItems.findIndex(img => img.original === modalImg.src);
+  // console.log(activeImage);
+
+  let index = activeImage ? activeImage : galleryItems.length - 1;
+  if (index > 0) {
+    index -=1
+  } else {
+    index = galleryItems.length - 1;
+  }
+  console.log(index);
+  console.log(galleryItems[index].original);
+  modalImg.src = galleryItems[index].original;
+  modalImg.alt = galleryItems[index].alt;
+}
 
 ///ленивая загрузка 
 // в разметке каждой  картинке поставить  атрибут   loading = "lazy"
@@ -212,3 +221,95 @@ function onImgLoaded(e) {
   console.log("lazyImages");
   e.target.classList.add("is-loaded")
 }
+//вариант  с childElementCount
+//не получается,  перелистывает срау на последнюю  картинку и все 
+
+// function onRightPress() {
+//   // const currentImgIndex = modalImg.dataset.index;
+//   // console.log(Number(modalImg.dataset?.index));
+
+//   const currentImgIndex = Number(modalImg.dataset?.index);
+  
+//   console.log(modalImg.dataset?.index);
+//   console.log(galleryEl.childElementCount);
+  
+//   if (currentImgIndex + 1 < galleryEl.childElementCount) {
+//     nextImageIndex = currentImgIndex + 1;
+//   } else {
+//     nextImageIndex = 0
+//   }
+// console.log(nextImageIndex);
+//   // const nextImageIndex =
+//   //   currentImgIndex + 1 < galleryEl.childElementCount ? currentImgIndex + 1 : 0;
+//   //   console.log(nextImageIdx);
+
+//     modalImg.src = galleryItems[nextImageIndex].original;
+//   modalImg.alt = galleryItems[nextImageIndex].description;
+
+
+//   //   setLightboxImageSrc(
+//   //   galleryItems[nextImageIndex].original,
+//   //   galleryItems[nextImageIndex].description,
+//   //   nextImageIndex,
+//   // );
+// }
+
+// function onLeftPress() {
+// const currentImgIndex = Number(modalImg.dataset?.index);
+//   const prevImageIndex =
+//     currentImgIndex - 1 >= 0 ? currentImgIndex - 1 : galleryEl.childElementCount - 1;
+
+//   modalImg.src = galleryItems[prevImageIndex].original;
+//   modalImg.alt = galleryItems[prevImageIndex].description;
+
+
+  
+//   // setLightboxImageSrc(
+//   //   galleryItems[prevImageIndex].original,
+//   //   galleryItems[prevImageIndex].description,
+//   //   prevImageIndex,
+//   // );  
+  
+// }
+
+
+///вариант  по DOM  нежелательный !
+// function onRightPress({ code }) {
+// //картинка,  что сейчас открыта  в модалке
+//   const currentImgRef = galleryEl
+//     .querySelector(`[data-source="${modalImg.src}"]`);
+  
+//   // console.log(currentImgRef);
+//   //лишка-предок от которой будем  искать след  эл-т 
+//   const parentNode = currentImgRef.closest('.gallery__item');
+//   // console.log(parentNode);
+//   //cлед картинка - это выбрать след лишку,  если она есть(если не последняя
+//   // и в этом эл-те ли  найти  эл-т  gallery-img)
+//   const nextImgRef = parentNode.nextElementSibling?.querySelector('.gallery__image');
+//   // console.log(nextImgRef);
+//   // ссылка  на  изображение  в найденной след  картинке -  это  то, что  находится в атрибуте data-source
+//   console.log(nextImgRef.dataset.source);
+
+//  //если нажата клавиif Вправо и если след картинка  существует,  то подменяем  ссылку  в модалке на ссылку след  картинки
+//   if (code === 'ArrowRight' && nextImgRef) {
+//       modalImg.src = nextImgRef.dataset.source  
+//   } return;
+//   //а  если  нет  дальше эл-та -??? что  сделать чтоб консоль не выдавала ошибку??
+// };
+
+// function onLeftPress({ code }) {
+//   const currentImgRef = galleryEl.querySelector(`[data-source="${modalImg.src}"]`);
+//   const parentNode = currentImgRef.closest(".gallery__item");
+//   const previousImgRef = parentNode.previousElementSibling?.querySelector(".gallery__image");
+//   ////может так лучше? 
+//   if (code !== "ArrowLeft") {
+//     return;
+//   }
+//     if (!previousImgRef) { 
+//       return;
+//     }  modalImg.src = previousImgRef.dataset.source; 
+    
+// }
+
+  
+
